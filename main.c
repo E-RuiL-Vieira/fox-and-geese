@@ -105,17 +105,45 @@ if (casa_adjacente (x, y, *a, *b) == -1){ //O ganso digitado não está adjacent
 return 1; //Dá pra comer um ganso
 }
 
-int movimentovalido(char m[7][7], int x, int y){ 
+int tem_movimentovalido(char m[7][7], int x, int y){ //Falta considerar diagonais
 	int i, j;
 	for (i = -1; i <= 1; i++){ 
-		for (j = -1; j <= 1; j++){ //Analisa todas as casas da matriz
+		for (j = -1; j <= 1; j++){ //Analisa todas as casas adjacentes
 			if (casaehvalida(m[x+i][x+j]) == 1){ //Verifica se a casa adjacente está livre
 				return 1;
 				}
 			}
 		}
-	return -1; //Se a função tiver passado pelos loops
+	return -1; //Se a função tiver passado pelos loops e não tiver retornado, é porque não há casa válida
 }
+int tem_movimentovalido_raposa(char m[7][7], int x, int y){ //Falta considerar diagonais
+	int i, j;
+	for (i = -2; i <= 2; i++){ 
+		for (j = -2; j <= 2; j++){ //Analisa todas as casas adjacentes e aquelas ao redor (Já que a raposa consegue saltar)
+			if (casaehvalida(m[x+i][x+j]) == 1){ //Verifica se a casa adjacente está livre
+				return 1;
+				}
+			}
+		}
+	return -1; //Se a função tiver passado pelos loops e não tiver retornado ainda, é porque não há casa válida. A raposa perdeu.
+}
+ 
+int movimentoextra(char m[7][7], int x, int y, int e){ 
+	int i, j, a, b; 
+	if (e != 1){
+		return -1;
+	}
+	for (i = -1; i <= 1; i++){ 
+		for(j = -1; j <= 1; j++)
+			if (m[x + i][y + j] != 'o' && m[x + i][y + j] != ' ' && m[x + i][y + j] != 'Z'){
+					if (casaehvalida(m[x + i + i][y + j + j] == 1)){
+						return 1;						
+					}
+			}
+	}
+	return -1;
+}
+
 
 int main(void) {
 	int i, j, a, b, c, d, g;
@@ -123,9 +151,10 @@ int main(void) {
   char ganso;
   char m[7][7] = {{"  ooo  "}, {"  ooo  "}, {"AooZooK"}, {"BoooooJ"}, {"CDEFGHI"}, {"  LMN  "}, {"  OPQ  "}}; //Configuração Inicial
 	imprimir(m);	
-	  while(g <= 13){ //Pois, como há 17 anos, e precisam sobrar 4 ou menos para a raposa ganhar, 
-			do {//Jogada da raposa
-	        printf("É a vez da raposa, digite as coordenadas da casa para qual deseja se movimentar: ");
+	  while(g < 13){ //Pois, como há 17 gansos, e precisam sobrar 4 ou menos para a raposa ganhar, 
+			//while(1){
+				do {//Jogada da raposa
+	      	printf("É a vez da raposa, digite as coordenadas da casa para qual deseja se movimentar: ");
 	        scanf("%d %d", &i, &j);
 					procurarletra('Z', &a, &b, m);
 	    } while (casaehvalida(m[i-1][j-1]) == -1 || (casa_adjacente(i-1, j-1, a, b) == -1 && entrecasas(i-1, j-1, a, b, m, &c, &d) < 0)); //Caso a casa digitada não esteja livre ou não é adjacente à raposa
@@ -136,12 +165,22 @@ int main(void) {
 					g++;
 				}
 			system("clear");
-	    imprimir(m); 
-	    
+	    imprimir(m);
+			printf("\n\n Gansos comidos: %d \n\n", g);
+			/*if (movimentoextra(m, i-1, j-1, entrecasas(i-1, j-1, a, b, m, &c, &d)) == 1){
+					continue;
+					}*/
+			//else{
+				//break;
+			//}
+			//}
+      if (g >= 13){ 
+				break;
+			}
 			do {
             printf("Digite o ganso que você deseja movimentar: ");
             scanf("%c", &ganso);
-	    } while (procurarletra(ganso, &a, &b, m) == -1 || movimentovalido(m, a, b) == -1); //Caso o ganso digitado não esteja no tabuleiro ou o movimento não seja válido
+	    } while (procurarletra(ganso, &a, &b, m) == -1 || tem_movimentovalido(m, a, b) == -1); //Caso o ganso digitado não esteja no tabuleiro ou o movimento não seja válido
 	    do {
             printf("Agora digite as coordenadas da casa para qual deseja se movimentar: ");
             scanf("%d %d", &i, &j);
@@ -151,6 +190,8 @@ int main(void) {
 				m[a][b] = 'o';
 				m[i-1][j-1] = ganso;
         imprimir(m);
+				printf("Gansos comidos: %d \n\n", g);
+
 		}
 	printf("Você ganhou o jogo!");
   return 0;
