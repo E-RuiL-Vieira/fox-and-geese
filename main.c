@@ -1,6 +1,4 @@
 #include <stdio.h>
-//Problema que eu percebi: Não dá pra mover o O, P e Q mesmo depois que as casas ao redor tão livres
-
 int temdiagonal(int i, int j){ //Verifica se a casa atual permite movimentos diagonais
 	if (i == 0 || i == 2 || i == 4 || i == 6){ 
 		if (j % 2 == 0){ //Em casas de linha par (começando a partir de zero), colunas pares permitem movimento diagonal
@@ -90,11 +88,14 @@ int procurarletra(char letra, int *a, int *b, char m[7][7]){ //Verifica se a let
 }
 
 int entrecasas(int i, int j, int x, int y, char m[7][7], int *a, int *b){ //i e j são as coordenadas do movimento da raposa, x e y são as coordenadas atuais da raposa e a e b são as coordenadas do ganso entre a raposa e a casa do movimento (se houver)
-*a = (i + x)/2; 
+*a = (i + x)/2;
 *b = (j + y)/2; 
 //As variáveis acima fazem a conta do ponto médio entre a casa atual da raposa e a casa para a qual ela deve se mover, calculando assim as coordenadas da casa que ela realiza o movimento de "comer" o ganso
 if (casa_adjacente(i, j, x, y) == 1){ //Se o movimento for adjacente, não precisa verificar se dá pra comer, porque é um movimento normal
 	return 0;
+}
+if (*a*j + *b*x + y - (x*j) - (*a*y) -(*b) != 0) { //Se os 3 pontos forem não colineares, não é possível que a raposa elimine um ganso.
+  return 0;
 }
 if (m[*a][*b] == 'o' || m[*a][*b] == ' '){ 
 	return -1; //A entrecasa não é um ganso
@@ -107,9 +108,10 @@ return 1; //Dá pra comer um ganso
 
 int tem_movimentovalido(char m[7][7], int x, int y){ //Falta considerar diagonais
 	int i, j;
-	for (i = -1; i <= 1; i++){ 
-		for (j = -1; j <= 1; j++){ //Analisa todas as casas adjacentes
-			if (casaehvalida(m[x+i][x+j]) == 1){ //Verifica se a casa adjacente está livre
+	for (i = 0; i < 7; i++){ 
+		for (j = 0; j < 7; j++){ //Analisa todas as casas adjacentes
+		if(casa_adjacente(i, j, x, y) == 1)
+			if (casaehvalida(m[i][j]) == 1){ //Verifica se a casa adjacente está livre
 				return 1;
 				}
 			}
@@ -119,13 +121,13 @@ int tem_movimentovalido(char m[7][7], int x, int y){ //Falta considerar diagonai
 int tem_movimentovalido_raposa(char m[7][7], int x, int y){ //Falta considerar diagonais
 	int i, j;
 	for (i = -2; i <= 2; i++){ 
-		for (j = -2; j <= 2; j++){ //Analisa todas as casas adjacentes e aquelas ao redor (Já que a raposa consegue saltar)
-			if (casaehvalida(m[x+i][x+j]) == 1){ //Verifica se a casa adjacente está livre
+		for (j = -2; j < 2; j++){ //Analisa todas as casas adjacentes
+			if(tem_movimentovalido(m, x + i , y + j) == 1){ 
 				return 1;
 				}
 			}
 		}
-	return -1; //Se a função tiver passado pelos loops e não tiver retornado ainda, é porque não há casa válida. A raposa perdeu.
+	return -1; //Se a função tiver passado pelos loops e não tiver retornado, é porque não há casa válida
 }
  
 int movimentoextra(char m[7][7], int x, int y, int e){ 
@@ -149,7 +151,7 @@ int main(void) {
 	int i, j, a, b, c, d, g;
 	g = 0; //g é o número de gansos que já foram comidos
   char ganso;
-  char m[7][7] = {{"  ooo  "}, {"  ooo  "}, {"AooZooK"}, {"BoooooJ"}, {"CDEFGHI"}, {"  LMN  "}, {"  OPQ  "}}; //Configuração Inicial
+  char m[7][7] = {{"  oZo  "}, {"  LMN  "}, {"oBAPKJo"}, {"ooooooo"}, {"CDEFGHI"}, {"  ooo  "}, {"  OoQ  "}}; //Configuração Inicial
 	imprimir(m);	
 	  while(g < 13){ //Pois, como há 17 gansos, e precisam sobrar 4 ou menos para a raposa ganhar, 
 			//while(1){
@@ -166,7 +168,7 @@ int main(void) {
 				}
 			system("clear");
 	    imprimir(m);
-			printf("\n\n Gansos comidos: %d \n\n", g);
+			printf("Gansos comidos: %d \n\n", g);
 			/*if (movimentoextra(m, i-1, j-1, entrecasas(i-1, j-1, a, b, m, &c, &d)) == 1){
 					continue;
 					}*/
@@ -175,6 +177,7 @@ int main(void) {
 			//}
 			//}
       if (g >= 13){ 
+				printf("\nVitória da raposa!");
 				break;
 			}
 			do {
@@ -191,8 +194,11 @@ int main(void) {
 				m[i-1][j-1] = ganso;
         imprimir(m);
 				printf("Gansos comidos: %d \n\n", g);
-
+		procurarletra('Z', &a, &b, m);
+		if (tem_movimentovalido_raposa(m, a, b) == -1){ 
+			printf("Vitória dos gansos!");
+			break;
 		}
-	printf("Você ganhou o jogo!");
+		}
   return 0;
 }
