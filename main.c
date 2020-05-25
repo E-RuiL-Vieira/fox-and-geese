@@ -4,7 +4,7 @@
 //Lia Isikawa Tricoli nUSP 4758701
 
 
-//diagonais
+//Diagonais
 //Digite ganso repetido 
 //Vitória dos gansos
 int temdiagonal(int i, int j){ //Verifica se a casa atual permite movimentos diagonais
@@ -167,16 +167,21 @@ int main(void) {
 	  while(g < 13){ //Pois, como há 17 gansos, e precisam sobrar 4 ou menos para a raposa ganhar, 
 			while(1){
 				do {//Jogada da raposa
-	      	printf("É a vez da raposa, digite as coordenadas da casa para qual deseja se movimentar: ");
+	      	printf("É a vez da raposa, digite as coordenadas da casa para qual deseja se movimentar (ou digite 0 0 caso não queira mover-se novamente): ");
 	        scanf("%d %d", &i, &j);
 					procurarletra('Z', &a, &b, m);
+					if (i == 0 && j == 0 && e == 1){ 
+						break;
+					}
 					e = entrecasas(i-1, j-1, a, b, m, &c, &d);
 	    } while (casaehvalida(m[i-1][j-1]) == -1 || (casa_adjacente(i-1, j-1, a, b) == -1 && e < 0)); //Caso a casa digitada não esteja livre ou não é adjacente à raposa
-        m[i-1][j-1] = 'Z'; //Movimenta a raposa
+        if (i != 0 && j != 0){
+				m[i-1][j-1] = 'Z'; //Movimenta a raposa
         m[a][b] = 'o'; //Limpa a a casa que ela estava
 				if (e == 1){
 					m[c][d] = 'o';
 					g++;
+				}
 				}
 			system("clear");
 	    imprimir(m);
