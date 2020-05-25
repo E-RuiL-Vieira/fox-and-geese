@@ -4,12 +4,10 @@
 //Lia Isikawa Tricoli nUSP 4758701
 
 
-//Diagonais
 //Digite ganso repetido 
-//Vitória dos gansos
 int temdiagonal(int i, int j){ //Verifica se a casa atual permite movimentos diagonais
 	if (i == 0 || i == 2 || i == 4 || i == 6){ 
-		if (j % 2 == 0){ //Em casas de linha par (começando a partir de zero), colunas pares permitem movimento diagonal
+		if (j % 2 == 0){ //Em casas de linha par (começando a partir de zero), colunas pares permitem movimento diagonal 
 			return 1; //Permite movimento diagonal
 		}
 		return -1; //Não permite movimento diagonal
@@ -62,12 +60,12 @@ int casaehvalida(char casa){ //Verifica se a casa do movimento selecionado está
 }
 
 int casa_adjacente (int i, int j, int x, int y) { //verfica se as coordenadas do movimento são adjacentes a casa atual do personagem, i e j são as coordenadas do movimento, e x e y são as coordenadas atuais do personagem
-    
+    printf("Olá! Eu sou a função casa_adjacente \n\n");
 		if (temdiagonal(x, y) == 1){ 
 			if ((i == x + 1 || i == x || i == x-1) && (j == y + 1  || j == y -1 || j == y)){ //Caso a casa do personagem tenha diagonal, se as coordenadas colocadas pelo usuário forem antecessoras ou sucessoras da coordenada do personagem, ela será adjacente
-				return 1; //Casa é adjacente
+				return 1; //Casa é adjacente 
 			}
-			return -1; //Casa não é adjacente
+			return -1; //Casa não é adjacente 
 		}
 		else{
 			if((i == x + 1 && j == y) || (i == x -1 && j == y) || (i == x && j == y - 1) || (i == x && j == y + 1)){ //Se a casa do personagem não tiver diagonal, haverá apenas 4 casos de casas adjacentes:A casa pode estar abaixo, na qual a coordenada da linha será +1 e a da coluna será igual/A casa pode estar acima, na qual a coordenada da linha será -1 e a da coluna será igual/ A casa pode estar à esquerda, que no caso a coordenada da linha seria igual e a coordenada da coluna será -1/A casa pode estar à direita, na qual a coordenada da linha será igual e a coordenada da coluna será +1
@@ -179,7 +177,7 @@ int main(void) {
 						break;
 					}
 					e = entrecasas(i-1, j-1, a, b, m, &c, &d);
-	    } while (casaehvalida(m[i-1][j-1]) == -1 || (casa_adjacente(i-1, j-1, a, b) == -1 && e < 0)); //Caso a casa digitada não esteja livre ou não é adjacente à raposa
+	    } while (casaehvalida(m[i-1][j-1]) == -1 || (casa_adjacente(i-1, j-1, a, b) == -1) || e < 0); //Caso a casa digitada não esteja livre ou não é adjacente à raposa
         if (i != 0 && j != 0){
 				m[i-1][j-1] = 'Z'; //Movimenta a raposa
         m[a][b] = 'o'; //Limpa a a casa que ela estava
