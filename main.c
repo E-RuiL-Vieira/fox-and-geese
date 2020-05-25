@@ -98,8 +98,8 @@ int entrecasas(int i, int j, int x, int y, char m[7][7], int *a, int *b){ //i e 
 	if (casa_adjacente(i, j, x, y) == 1){ //Se o movimento for adjacente, não precisa verificar se dá pra comer, porque é um movimento normal
 		return 0;
 	}
-	if (i*y + *a*j + *b*x - (*a*y) - (*b*i) -(x*j) != 0) { //Se os 3 pontos forem não colineares, não é possível que a raposa elimine um ganso.
-  	return 0;
+	if ((i * y) + (*a * j) + (*b * x) - (*a * y) - (*b * i) - (x * j) != 0) { //Se os 3 pontos forem não colineares, não é possível que a raposa elimine um ganso.
+  	return -1;
 	}
 	if (m[*a][*b] == 'o' || m[*a][*b] == ' '){ 
 		return -1; //A entrecasa não é um ganso
@@ -167,7 +167,7 @@ int main(void) {
   char ganso;
   char m[7][7] = {{"  ooo  "}, {"  ooo  "}, {"AooZooK"}, {"BoooooJ"}, {"CDEFGHI"}, {"  LMN  "}, {"  OPQ  "}}; //Configuração Inicial
 	imprimir(m);	
-	  while(g < 13){ //Pois, como há 17 gansos, e precisam sobrar 4 ou menos para a raposa ganhar, 
+	  while(1){ 
 			while(1){ //Loop de jogada da raposa
 				do {//Jogada da raposa
 	      	printf("É a vez da raposa, digite as coordenadas da casa para qual deseja se movimentar (ou digite 0 0 caso não queira mover-se novamente): ");
@@ -177,15 +177,15 @@ int main(void) {
 							break;
 					}
 					e = entrecasas(i-1, j-1, a, b, m, &c, &d);
-	    } while (casaehvalida(m[i-1][j-1]) == -1 || (casa_adjacente(i-1, j-1, a, b) == -1) || e < 0); //Caso a casa digitada não esteja livre ou não é adjacente à raposa
+	    } while (casaehvalida(m[i-1][j-1]) == -1 || ((casa_adjacente(i-1, j-1, a, b) == -1) && e < 0)); //Caso a casa digitada não esteja livre ou não é adjacente à raposa
       if (i != 0 && j != 0){ //Só movimenta a raposa e limpa a casa que ela estava se o jogador decidir fazer o movimento, ou seja, não digitar 0 0
-			m[i-1][j-1] = 'Z'; //Movimenta a raposa
-      m[a][b] = 'o'; //Limpa a a casa que ela estava
-			if (e == 1){ // Se for possível, a raposa elimina o ganso que estava na coordenada (c, d) e o número de gansos aumenta em 1
+				m[i-1][j-1] = 'Z'; //Movimenta a raposa
+      	m[a][b] = 'o'; //Limpa a a casa que ela estava
+			if (e == 1){ // Se for possível, a raposa elimina o ganso que estava na coordenada (c, d) e o número de gansos comidos aumenta em 1
+				printf("Aehoooooooo \n");
 				m[c][d] = 'o';
 				g++;
-				}
-				}
+			}
 			system("clear");
 	    imprimir(m);
 			printf("Gansos comidos: %d \n\n", g);
@@ -193,6 +193,7 @@ int main(void) {
 					continue;
 					}
 			else{
+				e = 0;
 				break;
 			}
 			
@@ -200,6 +201,7 @@ int main(void) {
       if (g >= 13){ //A raposa vence assim que o número de gansos comidos atinge 13
 				printf("\nVitória da raposa!");
 				break;
+			}
 			}
 			do {
             printf("Digite o ganso que você deseja movimentar: ");
@@ -222,6 +224,6 @@ int main(void) {
 			printf("Vitória dos gansos!");
 			break;
 		}
-		}
+	}
   return 0;
 }
