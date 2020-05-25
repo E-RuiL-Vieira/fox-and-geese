@@ -1,4 +1,11 @@
 #include <stdio.h>
+//A raposa tá fazendo movimentos diagonais mesmo que não possa
+//Condições de vitória dos gansos
+//Digite ganso duplicado
+//Movimentos múltiplos da raposa
+
+
+
 int temdiagonal(int i, int j){ //Verifica se a casa atual permite movimentos diagonais
 	if (i == 0 || i == 2 || i == 4 || i == 6){ 
 		if (j % 2 == 0){ //Em casas de linha par (começando a partir de zero), colunas pares permitem movimento diagonal
@@ -138,6 +145,7 @@ int movimentoextra(char m[7][7], int x, int y, int e){
 	for (i = -1; i <= 1; i++){ 
 		for(j = -1; j <= 1; j++)
 			if (m[x + i][y + j] != 'o' && m[x + i][y + j] != ' ' && m[x + i][y + j] != 'Z'){
+					printf("Movimento extra permitido! \n\n");
 					if (casaehvalida(m[x + i + i][y + j + j] == 1)){
 						return 1;						
 					}
@@ -151,10 +159,10 @@ int main(void) {
 	int i, j, a, b, c, d, g;
 	g = 0; //g é o número de gansos que já foram comidos
   char ganso;
-  char m[7][7] = {{"  oZo  "}, {"  LMN  "}, {"oBAPKJo"}, {"ooooooo"}, {"CDEFGHI"}, {"  ooo  "}, {"  OoQ  "}}; //Configuração Inicial
+  char m[7][7] = {{"  ooo  "}, {"  ooo  "}, {"AooZooK"}, {"BoooooJ"}, {"CDEFGHI"}, {"  LMN  "}, {"  OPQ  "}}; //Configuração Inicial
 	imprimir(m);	
 	  while(g < 13){ //Pois, como há 17 gansos, e precisam sobrar 4 ou menos para a raposa ganhar, 
-			//while(1){
+			while(1){
 				do {//Jogada da raposa
 	      	printf("É a vez da raposa, digite as coordenadas da casa para qual deseja se movimentar: ");
 	        scanf("%d %d", &i, &j);
@@ -169,13 +177,14 @@ int main(void) {
 			system("clear");
 	    imprimir(m);
 			printf("Gansos comidos: %d \n\n", g);
-			/*if (movimentoextra(m, i-1, j-1, entrecasas(i-1, j-1, a, b, m, &c, &d)) == 1){
+			printf("");
+			if (movimentoextra(m, i-1, j-1, entrecasas(i-1, j-1, a, b, m, &c, &d)) == 1){
 					continue;
-					}*/
-			//else{
-				//break;
-			//}
-			//}
+					}
+			else{
+				break;
+			}
+			}
       if (g >= 13){ 
 				printf("\nVitória da raposa!");
 				break;
