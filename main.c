@@ -126,18 +126,7 @@ int tem_movimentovalido(char m[7][7], int x, int y){ //Falta considerar diagonai
 		}
 	return -1; //Se a função tiver passado pelos loops e não tiver retornado, é porque não há casa válida
 }
-int tem_movimentovalido_raposa(char m[7][7], int x, int y){ //Falta considerar diagonais
-	int i, j;
-	for (i = -2; i <= 2; i++){ 
-		for (j = -2; j < 2; j++){ //Analisa todas as casas adjacentes
-			if(tem_movimentovalido(m, x + i , y + j) == 1){ 
-				return 1;
-				}
-			}
-		}
-	return -1; //Se a função tiver passado pelos loops e não tiver retornado, é porque não há casa válida
-}
- 
+
 int movimentoextra(char m[7][7], int x, int y, int e){ // x e y são as coordenadas atuais da raposa
 	int i, j, a, b; 
 	if (e != 1){
@@ -148,7 +137,6 @@ int movimentoextra(char m[7][7], int x, int y, int e){ // x e y são as coordena
 			if(casa_adjacente(i, j, x, y) == 1){
 				if (m[i][j] != 'o' && m[i][j] 	!= ' ' && m[i][j] != 'Z'){
 					if (casaehvalida(m[i + abs(x - i)][j + abs(y - j)]) == 1 || casaehvalida(m[i + abs(x - i)][j - abs(y - j)]) == 1 || casaehvalida(m[i - abs(x - i)][j + abs(y - j)]) == 1 || casaehvalida(m[i - abs(x - i)][j - abs(y - j)]) == 1){
-						printf("Oi, tudo bem? \n");
 						return 1;				
 					} 
 			}
@@ -157,6 +145,23 @@ int movimentoextra(char m[7][7], int x, int y, int e){ // x e y são as coordena
 	return -1;
 }
 
+int tem_movimentovalido_raposa(char m[7][7], int x, int y){ //Falta considerar diagonais
+	int i, j, a, b;
+	if (tem_movimentovalido (m, x, y) == 1){ 
+		return 1;
+	}
+	else {
+    for (i = -1; i <= 2; i++) { 
+      for (j = -2; j <= 2; j++) {
+        if (entrecasas (i, j, x, y, m, &a, &b) != 1) {
+          return -1;
+        }
+      }
+    }
+  return 1;
+ //Se a função tiver passado pelos loops e não tiver retornado, é porque não há casa válida
+}
+} 
 
 int main(void) {
 	int i, j, a, b, c, d, g, e;
